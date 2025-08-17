@@ -4,7 +4,7 @@ from ngo import register_ngo, post_opportunity, view_my_opportunities, view_appl
 from db import get_connection
 from datetime import datetime
 from ngo import record_volunteers_hours
-
+from student import view_my_hours
 
 def main():
     print("🌐 Welcome to Community Connect Hub")
@@ -64,6 +64,7 @@ def main():
                     print("2. Apply to opportunity")
                     print("3. View my applications")
                     print("4. Logout")
+                    print("5. View my volunteer hours")
                     student_choice = input("Select an option: ")
 
                     if student_choice == "1":
@@ -79,6 +80,8 @@ def main():
                     elif student_choice == "4":
                         print("👋 Logged out.")
                         break
+                    elif choice == "5":
+                        view_my_hours(student_id)
 
                     else:
                         print("❌ Invalid option.")
