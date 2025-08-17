@@ -66,6 +66,7 @@ TABLES['student_interests_opportunities'] = (
         PRIMARY KEY (student_id, opportunity_id),
         FOREIGN KEY (student_id) REFERENCES students(student_id),
         FOREIGN KEY (opportunity_id) REFERENCES opportunities(opportunity_id)
+        HOURS_WORKED INT UNSIGNED NOT NULL DEFAULT 0
     )"""
 )
 
@@ -129,4 +130,43 @@ def insert_sample_data(conn, cursor):
 
         conn.commit()
         print("✅ Sample data inserted.")
+def add_hours(student_id: int, opportunity_id: int, delta_hours: int):
+    """Increment volunteer hours for a student on a given opportunity."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE student_interests_opportunities
+        SET hours_worked = hours_worked + %s
+        WHERE student_id = %s AND opportunity_id = %s
+    """, (delta_hours, student_id, opportunity_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def set_hours(student_id: int, opportunity_id: int, hours: int):
+    """Overwrite volunteer hours with a new total."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE student_interests_opportunities
+        SET hours_worked = %s
+        WHERE student_id = %s AND opportunity_id = %s
+    """, (hours, student_id, opportunity_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def get_hours(student_id: int, opportunity_id: int) -> int:
+    """Fetch current hours worked for a student on an opportunity."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT hours_worked
+        FROM student_interests_opportunities
+        WHERE student_id = %s AND opportunity_id = %s
+    """, (student_id, opportunity_id))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return row[0] if row else 0
 
