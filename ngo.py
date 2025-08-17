@@ -1,5 +1,7 @@
 from db import get_connection
 from datetime import datetime
+from db import add_hours, set_hours, get_hours
+
 
 def register_ngo(user_id, name, email, cause):
     conn = get_connection()
@@ -72,3 +74,57 @@ def view_applicants_for_ngo(ngo_id):
             print(f"\n🔹 Opportunity: {title}")
             current_title = title
         print(f" - 👤 {name}, ✉️ {email}, 🧠 Skills: {skills}")
+        
+def record_volunteer_hours(ngo_id):
+    print("\n== Record Volunteer Hours ==")
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Fetch all applicants for this NGO's opportunities
+    cursor.execute("""
+        SELECT sio.student_id, s.name, o.opportunity_id, o.title, sio.hours_worked
+        FROM student_interests_opportunities sio
+        JOIN students s ON s.student_id = sio.student_id
+        JOIN opportunities o ON o.opportunity_id = sio.opportunity_id
+        WHERE o.ngo_id = %s
+    """, (ngo_id,))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    if not rows:
+        print("No students have applied to your opportunities yet.")
+        return
+
+    # Display applicants
+    print("\nID | Student | Opportunity | Current Hours")
+    for idx, (stu_id, stu_name, opp_id, opp_title, hrs) in enumerate(rows, start=1):
+        print(f"{idx}. {stu_name} - {opp_title} ({hrs} hrs)")
+
+    try:
+        choice = int(input("\nSelect a number to update: "))
+        if not (1 <= choice <= len(rows)):
+            print("Invalid choice.")
+            return
+    except ValueError:
+        print("Invalid input.")
+        return
+
+    stu_id, stu_name, opp_id, opp_title, hrs = rows[choice - 1]
+    print(f"\nSelected {stu_name} on '{opp_title}' (current: {hrs} hrs)")
+
+    mode = input("Enter 'a' to add hours or 's' to set total: ").lower()
+    try:
+        hours = int(input("Enter hours: "))
+    except ValueError:
+        print("Invalid hours.")
+        return
+
+    if mode == 'a':
+        add_hours(stu_id, opp_id, hours)
+        print(f"✅ Added {hours} hours. New total = {get_hours(stu_id, opp_id)}")
+    elif mode == 's':
+        set_hours(stu_id, opp_id, hours)
+        print(f"✅ Hours set to {hours}.")
+    else:
+        print("Invalid option.")
