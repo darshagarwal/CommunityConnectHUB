@@ -3,6 +3,7 @@ from student import register_student, list_opportunities, apply_to_opportunity, 
 from ngo import register_ngo, post_opportunity, view_my_opportunities, view_applicants_for_ngo
 from db import get_connection
 from datetime import datetime
+from ngo import
 
 
 def main():
@@ -89,6 +90,7 @@ def main():
                     print("2. View my posted opportunities")
                     print("3. View applicants for my opportunities")
                     print("4. Logout")
+                    print("5. Record volunteer hours")
                     ngo_choice = input("Select an option: ")
 
                     if ngo_choice == "1":
@@ -146,6 +148,8 @@ def main():
                     elif ngo_choice == "4":
                         print("👋 Logged out.")
                         break
+                    elif choice == "5":
+                        record_volunteer_hours(ngo_id)
 
                     else:
                         print("❌ Invalid option.")
