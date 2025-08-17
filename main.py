@@ -3,7 +3,7 @@ from student import register_student, list_opportunities, apply_to_opportunity, 
 from ngo import register_ngo, post_opportunity, view_my_opportunities, view_applicants_for_ngo
 from db import get_connection
 from datetime import datetime
-from ngo import
+from ngo import record_volunteers_hours
 
 
 def main():
