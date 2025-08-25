@@ -4,7 +4,7 @@ from ngo import register_ngo, post_opportunity, view_my_opportunities, view_appl
 from db import get_connection
 from datetime import datetime
 from ngo import record_volunteer_hours
-from student import view_my_hour
+from student import view_my_hours
 
 def main():
     print("🌐 Welcome to Community Connect Hub")
