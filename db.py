@@ -3,9 +3,9 @@ import mysql.connector
 # ================= DB CONFIG ================= #
 DB_CONFIG = {
     "host": "localhost",
-    "user": "root",            
-    "password": "L@pt0pP@ssw0rd$2025!",
-    "database": "connecthub"  
+    "user": "root",             # 🔑 change this
+    "password": "your_password",# 🔑 change this
+    "database": "community_connect"
 }
 
 def get_connection():
@@ -99,11 +99,13 @@ def seed_database():
     CREATE TABLE ngo_finance (
         finance_id INT AUTO_INCREMENT PRIMARY KEY,
         ngo_id INT,
+        opportunity_id INT,
         type ENUM('spending','collection'),
         amount DECIMAL(12,2),
         description TEXT,
         date DATE,
-        FOREIGN KEY(ngo_id) REFERENCES ngos(ngo_id)
+        FOREIGN KEY(ngo_id) REFERENCES ngos(ngo_id),
+        FOREIGN KEY(opportunity_id) REFERENCES opportunities(opportunity_id)
     )
     """)
 
@@ -119,7 +121,7 @@ def seed_database():
     )
     """)
 
-    # Insert dummy users
+    # Insert dummy data
     cursor.executemany(
         "INSERT INTO users (username, password, user_type) VALUES (%s,%s,%s)",
         [
@@ -137,7 +139,6 @@ def seed_database():
         ]
     )
 
-    # Insert students
     cursor.executemany(
         "INSERT INTO students (user_id, name, grade, contact_email, interests) VALUES (%s,%s,%s,%s,%s)",
         [
@@ -152,7 +153,6 @@ def seed_database():
         ]
     )
 
-    # Insert NGOs
     cursor.executemany(
         "INSERT INTO ngos (user_id, name, mission_statement, address, contact_person, contact_email) VALUES (%s,%s,%s,%s,%s,%s)",
         [
@@ -162,43 +162,31 @@ def seed_database():
         ]
     )
 
-    # Insert opportunities
     cursor.executemany(
         "INSERT INTO opportunities (ngo_id, title, description, required_skills, time_commitment, location, start_date, end_date, status, category) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
         [
-            (1,'Beach Clean-Up','Help clean Mumbai beach','Teamwork','4 hours','Mumbai','2025-09-01','2025-09-10','active','Environment'),
             (1,'Tree Plantation','Plant trees in Delhi park','Gardening','2 hours','Delhi','2025-09-05','2025-09-12','active','Environment'),
-            (2,'Dog Shelter Helper','Assist with feeding and cleaning','Animal care','3 hours','Mumbai','2025-09-01','2025-09-09','active','Animals'),
-            (3,'Evening Tutoring','Tutor kids in Math and English','Teaching','2 hours/day','Kolkata','2025-09-01','2025-09-30','active','Education')
+            (1,'River Cleanup','Help clean Yamuna river','Teamwork','5 hours','Delhi','2025-09-10','2025-09-20','active','Environment'),
+            (2,'Dog Shelter Helper','Assist with feeding and cleaning','Animal care','3 hours','Mumbai','2025-09-01','2025-09-09','active','Animals')
         ]
     )
 
-    # Insert student applications
     cursor.executemany(
-        "INSERT INTO student_interests_opportunities (student_id, opportunity_id, date_expressed_interest) VALUES (%s,%s,NOW())",
+        "INSERT INTO ngo_finance (ngo_id, opportunity_id, type, amount, description, date) VALUES (%s,%s,%s,%s,%s,%s)",
         [
-            (1,1),(2,1),(3,2),(4,3)
+            (1,1,'collection',5000,'CSR donation from company','2025-09-01'),
+            (1,1,'spending',1200,'Tools and gloves','2025-09-02'),
+            (1,2,'collection',7000,'Local sponsorship','2025-09-05'),
+            (1,2,'spending',2500,'Cleaning boats & nets','2025-09-06'),
+            (2,3,'collection',3000,'Public donations','2025-09-01'),
+            (2,3,'spending',1000,'Dog food','2025-09-02')
         ]
     )
 
-    # Insert NGO finance
-    cursor.executemany(
-        "INSERT INTO ngo_finance (ngo_id, type, amount, description, date) VALUES (%s,%s,%s,%s,%s)",
-        [
-            (1,'collection',5000,'CSR donation','2025-09-01'),
-            (1,'spending',2000,'Tree saplings','2025-09-02'),
-            (2,'collection',3000,'Public donations','2025-09-01'),
-            (2,'spending',800,'Dog food','2025-09-02'),
-            (3,'collection',4000,'Grant','2025-09-01'),
-            (3,'spending',1200,'Books purchase','2025-09-02')
-        ]
-    )
-
-    # Insert volunteer hours
     cursor.executemany(
         "INSERT INTO volunteer_hours (student_id, opportunity_id, hours) VALUES (%s,%s,%s)",
         [
-            (1,1,5),(2,1,4),(3,2,3)
+            (1,1,5),(2,1,3),(3,2,4),(4,3,6)
         ]
     )
 
@@ -207,6 +195,5 @@ def seed_database():
     conn.close()
     print("✅ Database seeded with dummy data.")
 
-# Run directly
 if __name__ == "__main__":
     seed_database()

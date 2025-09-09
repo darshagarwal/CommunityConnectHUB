@@ -49,24 +49,64 @@ def view_applicants(opportunity_id):
     for row in rows:
         print(f"Student {row[0]}: {row[1]} | {row[2]} | Interests: {row[3]}")
 
-def add_finance_entry(ngo_id, entry_type, amount, description):
+def add_finance_entry(ngo_id, opportunity_id, entry_type, amount, description):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO ngo_finance (ngo_id, type, amount, description, date) VALUES (%s,%s,%s,%s,%s)",
-                   (ngo_id, entry_type, amount, description, datetime.date.today()))
+    cursor.execute(
+        "INSERT INTO ngo_finance (ngo_id, opportunity_id, type, amount, description, date) VALUES (%s,%s,%s,%s,%s,%s)",
+        (ngo_id, opportunity_id, entry_type, amount, description, datetime.date.today())
+    )
     conn.commit()
     conn.close()
-    print("✅ Finance entry added.")
+    print(f"✅ Finance entry added for opportunity {opportunity_id}.")
 
-def view_finance_report(ngo_id):
+def view_impact_report(ngo_id):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT type, amount, description, date FROM ngo_finance WHERE ngo_id=%s", (ngo_id,))
-    rows = cursor.fetchall()
+
+    print(f"\n📊 Impact Report for NGO {ngo_id}")
+
+    # Get all opportunities of this NGO
+    cursor.execute("SELECT opportunity_id, title FROM opportunities WHERE ngo_id=%s", (ngo_id,))
+    opportunities = cursor.fetchall()
+
+    if not opportunities:
+        print("❌ No opportunities found for this NGO.")
+        conn.close()
+        return
+
+    for opp in opportunities:
+        opp_id, title = opp
+        print(f"\n🚩 Opportunity: {title} (ID: {opp_id})")
+
+        # Finance records
+        cursor.execute("""
+        SELECT type, amount, description, date 
+        FROM ngo_finance 
+        WHERE ngo_id=%s AND opportunity_id=%s
+        """, (ngo_id, opp_id))
+        finances = cursor.fetchall()
+        print("\n💰 Finance Records:")
+        if not finances:
+            print("   No finance records yet.")
+        for row in finances:
+            print(f"   {row[0]} | ₹{row[1]} | {row[2]} | {row[3]}")
+
+        # Volunteer hours
+        cursor.execute("""
+        SELECT s.name, v.hours 
+        FROM volunteer_hours v
+        JOIN students s ON v.student_id = s.student_id
+        WHERE v.opportunity_id=%s
+        """, (opp_id,))
+        hours = cursor.fetchall()
+        print("\n⏱ Volunteer Hours:")
+        if not hours:
+            print("   No volunteer hours assigned yet.")
+        for row in hours:
+            print(f"   {row[0]} → {row[1]} hours")
+
     conn.close()
-    print(f"\n📊 Finance Report for NGO {ngo_id}:")
-    for row in rows:
-        print(f"{row[0]} | ₹{row[1]} | {row[2]} | {row[3]}")
 
 def assign_volunteer_hours(student_id, opportunity_id, hours):
     conn = get_connection()

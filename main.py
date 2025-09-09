@@ -2,7 +2,7 @@ from auth import register_user, login_user
 from db import get_connection
 from ngo import (
     post_opportunity, view_my_opportunities, edit_opportunity,
-    view_applicants, add_finance_entry, view_finance_report,
+    view_applicants, add_finance_entry, view_impact_report,
     assign_volunteer_hours, end_opportunity
 )
 from student import (
@@ -44,8 +44,8 @@ def main():
                     print("2. View my opportunities")
                     print("3. Edit opportunity")
                     print("4. View applicants")
-                    print("5. Add finance entry")
-                    print("6. View finance report")
+                    print("5. Add finance entry (per drive)")
+                    print("6. View impact report (finance + hours grouped by drives)")
                     print("7. Assign volunteer hours")
                     print("8. End opportunity early")
                     print("9. Logout")
@@ -85,13 +85,14 @@ def main():
                         view_applicants(oid)
 
                     elif ngo_choice == "5":
+                        oid = int(input("Opportunity ID: "))
                         t = input("Type (collection/spending): ")
                         amt = float(input("Amount: "))
                         desc = input("Description: ")
-                        add_finance_entry(ngo_id, t, amt, desc)
+                        add_finance_entry(ngo_id, oid, t, amt, desc)
 
                     elif ngo_choice == "6":
-                        view_finance_report(ngo_id)
+                        view_impact_report(ngo_id)
 
                     elif ngo_choice == "7":
                         sid = int(input("Student ID: "))
