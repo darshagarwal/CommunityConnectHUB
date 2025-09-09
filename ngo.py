@@ -1,28 +1,13 @@
 from db import get_connection
-from datetime import datetime
-from db import add_hours, set_hours, get_hours
+import datetime
 
-
-def register_ngo(user_id, name, email, cause):
+def post_opportunity(ngo_id, title, desc, skills, commitment, location, start_date, end_date, category):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO ngos (user_id, name, email, cause) VALUES (%s, %s, %s, %s)",
-                   (user_id, name, email, cause))
-    conn.commit()
-    conn.close()
-
-def post_opportunity(ngo_id, title, description, skills_required, time_commitment, location, end_date, category):
-    conn = get_connection()
-    cursor = conn.cursor()
-    start_date = datetime.now().strftime('%Y-%m-%d')  # Current date
-
-    query = """
-        INSERT INTO opportunities (ngo_id, title, description, skills_required, time_commitment,
-        location, start_date, end_date, category)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    """
-    cursor.execute(query, (ngo_id, title, description, skills_required, time_commitment,
-                           location, start_date, end_date, category))
+    query = """INSERT INTO opportunities 
+    (ngo_id, title, description, required_skills, time_commitment, location, start_date, end_date, category, status)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'active')"""
+    cursor.execute(query, (ngo_id, title, desc, skills, commitment, location, start_date, end_date, category))
     conn.commit()
     conn.close()
     print("✅ Opportunity posted successfully!")
@@ -30,101 +15,72 @@ def post_opportunity(ngo_id, title, description, skills_required, time_commitmen
 def view_my_opportunities(ngo_id):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT title, description, start_date, end_date, location, category FROM opportunities WHERE ngo_id = %s", (ngo_id,))
-    opportunities = cursor.fetchall()
-    conn.close()
-
-    if not opportunities:
-        print("📭 No opportunities posted yet.")
-        return
-
-    print("\n📋 Your Posted Opportunities:")
-    for opp in opportunities:
-        print(f"🔹 Title: {opp[0]}")
-        print(f"📝 Description: {opp[1]}")
-        print(f"📅 Start: {opp[2]}, End: {opp[3]}")
-        print(f"📍 Location: {opp[4]}, 🏷️ Category: {opp[5]}")
-        print("-" * 40)
-
-def view_applicants_for_ngo(ngo_id):
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    query = """
-        SELECT o.title, s.name, s.email, s.skills
-        FROM opportunities o
-        JOIN student_interests_opportunities sio ON o.opportunity_id = sio.opportunity_id
-        JOIN students s ON sio.student_id = s.student_id
-        WHERE o.ngo_id = %s
-        ORDER BY o.title
-    """
-    cursor.execute(query, (ngo_id,))
-    results = cursor.fetchall()
-    conn.close()
-
-    if not results:
-        print("📭 No students have applied to your opportunities yet.")
-        return
-
-    print("\n👥 Applicants for Your Opportunities:")
-    current_title = None
-    for row in results:
-        title, name, email, skills = row
-        if title != current_title:
-            print(f"\n🔹 Opportunity: {title}")
-            current_title = title
-        print(f" - 👤 {name}, ✉️ {email}, 🧠 Skills: {skills}")
-        
-def record_volunteer_hours(ngo_id):
-    print("\n== Record Volunteer Hours ==")
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    # Fetch all applicants for this NGO's opportunities
-    cursor.execute("""
-        SELECT sio.student_id, s.name, o.opportunity_id, o.title, sio.hours_worked
-        FROM student_interests_opportunities sio
-        JOIN students s ON s.student_id = sio.student_id
-        JOIN opportunities o ON o.opportunity_id = sio.opportunity_id
-        WHERE o.ngo_id = %s
-    """, (ngo_id,))
+    cursor.execute("SELECT opportunity_id, title, status, start_date, end_date FROM opportunities WHERE ngo_id=%s", (ngo_id,))
     rows = cursor.fetchall()
-    cursor.close()
     conn.close()
+    print("\n📌 Opportunities by NGO", ngo_id)
+    for row in rows:
+        print(f"[{row[0]}] {row[1]} | {row[2]} | {row[3]} → {row[4]}")
 
-    if not rows:
-        print("No students have applied to your opportunities yet.")
-        return
+def edit_opportunity(ngo_id, opportunity_id, **updates):
+    conn = get_connection()
+    cursor = conn.cursor()
+    set_clause = ", ".join(f"{col}=%s" for col in updates.keys())
+    values = list(updates.values()) + [ngo_id, opportunity_id]
+    query = f"UPDATE opportunities SET {set_clause} WHERE ngo_id=%s AND opportunity_id=%s"
+    cursor.execute(query, tuple(values))
+    conn.commit()
+    conn.close()
+    print(f"✅ Opportunity {opportunity_id} updated!")
 
-    # Display applicants
-    print("\nID | Student | Opportunity | Current Hours")
-    for idx, (stu_id, stu_name, opp_id, opp_title, hrs) in enumerate(rows, start=1):
-        print(f"{idx}. {stu_name} - {opp_title} ({hrs} hrs)")
+def view_applicants(opportunity_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = """
+    SELECT s.student_id, s.name, s.contact_email, s.interests
+    FROM students s
+    JOIN student_interests_opportunities sio ON s.student_id = sio.student_id
+    WHERE sio.opportunity_id = %s
+    """
+    cursor.execute(query, (opportunity_id,))
+    rows = cursor.fetchall()
+    conn.close()
+    print(f"\n📌 Applicants for Opportunity {opportunity_id}:")
+    for row in rows:
+        print(f"Student {row[0]}: {row[1]} | {row[2]} | Interests: {row[3]}")
 
-    try:
-        choice = int(input("\nSelect a number to update: "))
-        if not (1 <= choice <= len(rows)):
-            print("Invalid choice.")
-            return
-    except ValueError:
-        print("Invalid input.")
-        return
+def add_finance_entry(ngo_id, entry_type, amount, description):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO ngo_finance (ngo_id, type, amount, description, date) VALUES (%s,%s,%s,%s,%s)",
+                   (ngo_id, entry_type, amount, description, datetime.date.today()))
+    conn.commit()
+    conn.close()
+    print("✅ Finance entry added.")
 
-    stu_id, stu_name, opp_id, opp_title, hrs = rows[choice - 1]
-    print(f"\nSelected {stu_name} on '{opp_title}' (current: {hrs} hrs)")
+def view_finance_report(ngo_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT type, amount, description, date FROM ngo_finance WHERE ngo_id=%s", (ngo_id,))
+    rows = cursor.fetchall()
+    conn.close()
+    print(f"\n📊 Finance Report for NGO {ngo_id}:")
+    for row in rows:
+        print(f"{row[0]} | ₹{row[1]} | {row[2]} | {row[3]}")
 
-    mode = input("Enter 'a' to add hours or 's' to set total: ").lower()
-    try:
-        hours = int(input("Enter hours: "))
-    except ValueError:
-        print("Invalid hours.")
-        return
+def assign_volunteer_hours(student_id, opportunity_id, hours):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO volunteer_hours (student_id, opportunity_id, hours) VALUES (%s,%s,%s) "
+                   "ON DUPLICATE KEY UPDATE hours=%s", (student_id, opportunity_id, hours, hours))
+    conn.commit()
+    conn.close()
+    print(f"✅ Assigned {hours} hours to student {student_id} for opportunity {opportunity_id}")
 
-    if mode == 'a':
-        add_hours(stu_id, opp_id, hours)
-        print(f"✅ Added {hours} hours. New total = {get_hours(stu_id, opp_id)}")
-    elif mode == 's':
-        set_hours(stu_id, opp_id, hours)
-        print(f"✅ Hours set to {hours}.")
-    else:
-        print("Invalid option.")
+def end_opportunity(ngo_id, opportunity_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE opportunities SET status='ended' WHERE ngo_id=%s AND opportunity_id=%s", (ngo_id, opportunity_id))
+    conn.commit()
+    conn.close()
+    print(f"✅ Opportunity {opportunity_id} has been ended early by NGO {ngo_id}.")

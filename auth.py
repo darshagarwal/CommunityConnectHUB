@@ -1,18 +1,10 @@
 from db import get_connection
 
 def register_user(username, password, user_type):
+    if len(password) < 8:
+        raise ValueError("Password must be at least 8 characters long.")
     conn = get_connection()
     cursor = conn.cursor()
-
-    # Check if the username already exists
-    cursor.execute("SELECT user_id FROM users WHERE username = %s", (username,))
-    existing_user = cursor.fetchone()
-
-    if existing_user:
-        print("⚠️ Username already exists. Please choose another.")
-        conn.close()
-        return None
-
     query = "INSERT INTO users (username, password, user_type) VALUES (%s, %s, %s)"
     cursor.execute(query, (username, password, user_type))
     conn.commit()
@@ -26,4 +18,4 @@ def login_user(username, password):
     cursor.execute("SELECT user_id, user_type FROM users WHERE username=%s AND password=%s", (username, password))
     result = cursor.fetchone()
     conn.close()
-    return result  # (user_id, user_type) or None
+    return result
