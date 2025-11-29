@@ -80,12 +80,14 @@ def generate_certificate(student_id, opportunity_id):
         return
 
     student_name = student[0]
-    
+   print("\n" + "="*70)
+    print("|" + "🎖️  VOLUNTEER CERTIFICATE  🎖️".center(68) +"  " + "|")
+    print("="*70)
     print("|" + " ".center(68) + "|")
     print("|" + "This is to proudly certify that".center(68) + "|")
     print("|" + " ".center(68) + "|")
     
-    print("|" + f"🌟  {student_name.upper()}  🌟".center(68) + "|")
+    print("|" + f"{student_name.upper()}".center(65) + '   '+"|")
     print("|" + " ".center(68) + "|")
     
     print("|" + "has successfully contributed:".center(68) + "|")
@@ -97,7 +99,7 @@ def generate_certificate(student_id, opportunity_id):
     print("|" + "during the opportunity:".center(68) + "|")
     print("|" + " ".center(68) + "|")
     
-    print("|" + f"📌  \"{title}\"".center(68) + "|")
+    print("|" + f" \"{title}\"".center(68) + "|")
     print("|" + " ".center(68) + "|")
     
     print("|" + f"Successfully completed on: {end_date}".center(68) + "|")
@@ -109,4 +111,3 @@ def generate_certificate(student_id, opportunity_id):
     print("="*70)
     print("|" + "— Community Connect Hub —".center(68) + "|")
     print("="*70 + "\n")
-
