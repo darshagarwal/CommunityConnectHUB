@@ -23,19 +23,19 @@ def main():
             user_type = input("Type (student/ngo): ")
             try:
                 user_id = register_user(username, password, user_type)
-                print("✅ Registered successfully with user_id:", user_id)
+                print("Registered successfully with user_id:", user_id)
             except Exception as e:
-                print("❌ Error:", e)
+                print("Error:", e)
 
         elif choice == "2":
             username = input("Username: ")
             password = input("Password: ")
             user = login_user(username, password)
             if not user:
-                print("❌ Invalid credentials.")
+                print("Invalid credentials.")
                 continue
             user_id, user_type = user
-            print(f"✅ Logged in as {user_type}")
+            print(f"Logged in as {user_type}")
 
             if user_type == "ngo":
                 while True:
@@ -57,7 +57,7 @@ def main():
                     ngo = cursor.fetchone()
                     conn.close()
                     if not ngo:
-                        print("❌ NGO profile missing.")
+                        print("NGO profile missing.")
                         break
                     ngo_id = ngo[0]
 
@@ -105,12 +105,12 @@ def main():
                         end_opportunity(ngo_id, oid)
 
                     elif ngo_choice == "9":
-                        print("👋 Logged out.")
+                        print("Logged out.")
                         break
 
             elif user_type == "student":
                 while True:
-                    print("\n👤 Student Dashboard")
+                    print("\n Student Dashboard")
                     print("1. View opportunities")
                     print("2. Apply for opportunity")
                     print("3. View my applications")
@@ -124,7 +124,7 @@ def main():
                     student = cursor.fetchone()
                     conn.close()
                     if not student:
-                        print("❌ Student profile missing.")
+                        print("Student profile missing.")
                         break
                     student_id = student[0]
 
@@ -143,11 +143,11 @@ def main():
                         generate_certificate(student_id, oid)
 
                     elif st_choice == "5":
-                        print("👋 Logged out.")
+                        print("Logged out.")
                         break
 
         elif choice == "3":
-            print("👋 Goodbye!")
+            print("Goodbye!")
             break
 
 if __name__ == "__main__":
