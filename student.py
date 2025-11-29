@@ -7,7 +7,7 @@ def view_opportunities():
     cursor.execute("SELECT opportunity_id, title, description, location, start_date, end_date, status FROM opportunities WHERE status='active'")
     rows = cursor.fetchall()
     conn.close()
-    print("\n📌 Available Opportunities:")
+    print("\n Available Opportunities:")
     for row in rows:
         print(f"[{row[0]}] {row[1]} | {row[2]} | {row[3]} | {row[4]} → {row[5]} | {row[6]}")
 
@@ -18,9 +18,9 @@ def apply_for_opportunity(student_id, opportunity_id):
         cursor.execute("INSERT INTO student_interests_opportunities (student_id, opportunity_id, date_expressed_interest) VALUES (%s,%s,NOW())",
                        (student_id, opportunity_id))
         conn.commit()
-        print(f"✅ Student {student_id} applied for opportunity {opportunity_id}")
+        print(f"Student {student_id} applied for opportunity {opportunity_id}")
     except Exception as e:
-        print("⚠️ Already applied or error:", e)
+        print(" Already applied or error:", e)
     conn.close()
 
 def view_my_applications(student_id):
@@ -35,7 +35,7 @@ def view_my_applications(student_id):
     cursor.execute(query, (student_id,))
     rows = cursor.fetchall()
     conn.close()
-    print(f"\n📌 Applications of Student {student_id}:")
+    print(f"\n Applications of Student {student_id}:")
     for row in rows:
         print(f"[{row[0]}] {row[1]} | {row[2]} | {row[3]} → {row[4]} | {row[5]}")
 
@@ -49,7 +49,7 @@ def generate_certificate(student_id, opportunity_id):
     cursor.execute("SELECT title, end_date, status FROM opportunities WHERE opportunity_id = %s", (opportunity_id,))
     opp = cursor.fetchone()
     if not opp:
-        print("❌ Opportunity not found.")
+        print(" Opportunity not found.")
         conn.close()
         return
 
@@ -57,7 +57,7 @@ def generate_certificate(student_id, opportunity_id):
     today = datetime.date.today()
 
     if status != "ended" and today < end_date:
-        print("⚠️ Certificate not available yet. Opportunity is still ongoing.")
+        print(" Certificate not available yet. Opportunity is still ongoing.")
         conn.close()
         return
 
@@ -65,7 +65,7 @@ def generate_certificate(student_id, opportunity_id):
                    (student_id, opportunity_id))
     hours = cursor.fetchone()
     if not hours:
-        print("⚠️ NGO has not assigned hours yet. Certificate not available.")
+        print(" NGO has not assigned hours yet. Certificate not available.")
         conn.close()
         return
 
@@ -76,14 +76,38 @@ def generate_certificate(student_id, opportunity_id):
     conn.close()
 
     if not student:
-        print("❌ Student not found.")
+        print(" Student not found.")
         return
 
     student_name = student[0]
-
-    print("\n================ VOLUNTEER CERTIFICATE ================")
-    print(f"🏆 This is to certify that {student_name}")
-    print(f"contributed {hours} volunteer hours in the opportunity:")
-    print(f"\"{title}\"")
-    print(f"Successfully completed on {end_date}")
-    print("=======================================================\n")
+   print("\n" + "="*70)
+    print("|" + "🎖️  VOLUNTEER CERTIFICATE  🎖️".center(68) +"  " + "|")
+    print("="*70)
+    print("|" + " ".center(68) + "|")
+    print("|" + "This is to proudly certify that".center(68) + "|")
+    print("|" + " ".center(68) + "|")
+    
+    print("|" + f"{student_name.upper()}".center(65) + '   '+"|")
+    print("|" + " ".center(68) + "|")
+    
+    print("|" + "has successfully contributed:".center(68) + "|")
+    print("|" + " ".center(68) + "|")
+    
+    print("|" + f"➤ {hours} HOURS of dedicated volunteer service".center(68) + "|")
+    print("|" + " ".center(68) + "|")
+    
+    print("|" + "during the opportunity:".center(68) + "|")
+    print("|" + " ".center(68) + "|")
+    
+    print("|" + f" \"{title}\"".center(68) + "|")
+    print("|" + " ".center(68) + "|")
+    
+    print("|" + f"Successfully completed on: {end_date}".center(68) + "|")
+    print("|" + " ".center(68) + "|")
+    
+    print("|" + "We appreciate your commitment towards community welfare!".center(68) + "|")
+    print("|" + " ".center(68) + "|")
+    
+    print("="*70)
+    print("|" + "— Community Connect Hub —".center(68) + "|")
+    print("="*70 + "\n")

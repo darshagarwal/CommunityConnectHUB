@@ -12,6 +12,7 @@ from student import (
 import datetime
 import sys
 
+<<<<<<< HEAD
 # Redirect output to file
 sys.stdout = open("test_output.txt", "w", encoding="utf-8")
 
@@ -25,6 +26,21 @@ def reset_db():
     cur.execute("SET FOREIGN_KEY_CHECKS=1")
     conn.commit()
     conn.close()
+=======
+def run_all_tests():
+    print("\n================= AUTH TESTS =================")
+    try:
+        student_uid = register_user("teststudent", "password123", "student")
+        print("Registered new student, user_id:", student_uid)
+    except Exception as e:
+        print("Student already exists:", e)
+
+    try:
+        ngo_uid = register_user("testngo", "password123", "ngo")
+        print("Registered new NGO, user_id:", ngo_uid)
+    except Exception as e:
+        print("NGO already exists:", e)
+>>>>>>> 28127744d2e2b1d3794e56a502ab9ad71e12100c
 
 def seed_data():
     ngo_uid = register_user("ngo_demo", "password123", "ngo")

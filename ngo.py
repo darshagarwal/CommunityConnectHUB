@@ -10,7 +10,7 @@ def post_opportunity(ngo_id, title, desc, skills, commitment, location, start_da
     cursor.execute(query, (ngo_id, title, desc, skills, commitment, location, start_date, end_date, category))
     conn.commit()
     conn.close()
-    print("✅ Opportunity posted successfully!")
+    print("Opportunity posted successfully!")
 
 def view_my_opportunities(ngo_id):
     conn = get_connection()
@@ -18,7 +18,7 @@ def view_my_opportunities(ngo_id):
     cursor.execute("SELECT opportunity_id, title, status, start_date, end_date FROM opportunities WHERE ngo_id=%s", (ngo_id,))
     rows = cursor.fetchall()
     conn.close()
-    print("\n📌 Opportunities by NGO", ngo_id)
+    print("\n Opportunities by NGO", ngo_id)
     for row in rows:
         print(f"[{row[0]}] {row[1]} | {row[2]} | {row[3]} → {row[4]}")
 
@@ -31,7 +31,7 @@ def edit_opportunity(ngo_id, opportunity_id, **updates):
     cursor.execute(query, tuple(values))
     conn.commit()
     conn.close()
-    print(f"✅ Opportunity {opportunity_id} updated!")
+    print(f"Opportunity {opportunity_id} updated!")
 
 def view_applicants(opportunity_id):
     conn = get_connection()
@@ -45,7 +45,7 @@ def view_applicants(opportunity_id):
     cursor.execute(query, (opportunity_id,))
     rows = cursor.fetchall()
     conn.close()
-    print(f"\n📌 Applicants for Opportunity {opportunity_id}:")
+    print(f"\n Applicants for Opportunity {opportunity_id}:")
     for row in rows:
         print(f"Student {row[0]}: {row[1]} | {row[2]} | Interests: {row[3]}")
 
@@ -58,26 +58,26 @@ def add_finance_entry(ngo_id, opportunity_id, entry_type, amount, description):
     )
     conn.commit()
     conn.close()
-    print(f"✅ Finance entry added for opportunity {opportunity_id}.")
+    print(f"Finance entry added for opportunity {opportunity_id}.")
 
 def view_impact_report(ngo_id):
     conn = get_connection()
     cursor = conn.cursor()
 
-    print(f"\n📊 Impact Report for NGO {ngo_id}")
+    print(f"\n Impact Report for NGO {ngo_id}")
 
     # Get all opportunities of this NGO
     cursor.execute("SELECT opportunity_id, title FROM opportunities WHERE ngo_id=%s", (ngo_id,))
     opportunities = cursor.fetchall()
 
     if not opportunities:
-        print("❌ No opportunities found for this NGO.")
+        print("No opportunities found for this NGO.")
         conn.close()
         return
 
     for opp in opportunities:
         opp_id, title = opp
-        print(f"\n🚩 Opportunity: {title} (ID: {opp_id})")
+        print(f"\n Opportunity: {title} (ID: {opp_id})")
 
         # Finance records
         cursor.execute("""
@@ -86,7 +86,7 @@ def view_impact_report(ngo_id):
         WHERE ngo_id=%s AND opportunity_id=%s
         """, (ngo_id, opp_id))
         finances = cursor.fetchall()
-        print("\n💰 Finance Records:")
+        print("\n Finance Records:")
         if not finances:
             print("   No finance records yet.")
         for row in finances:
@@ -115,7 +115,7 @@ def assign_volunteer_hours(student_id, opportunity_id, hours):
                    "ON DUPLICATE KEY UPDATE hours=%s", (student_id, opportunity_id, hours, hours))
     conn.commit()
     conn.close()
-    print(f"✅ Assigned {hours} hours to student {student_id} for opportunity {opportunity_id}")
+    print(f"Assigned {hours} hours to student {student_id} for opportunity {opportunity_id}")
 
 def end_opportunity(ngo_id, opportunity_id):
     conn = get_connection()
@@ -123,4 +123,4 @@ def end_opportunity(ngo_id, opportunity_id):
     cursor.execute("UPDATE opportunities SET status='ended' WHERE ngo_id=%s AND opportunity_id=%s", (ngo_id, opportunity_id))
     conn.commit()
     conn.close()
-    print(f"✅ Opportunity {opportunity_id} has been ended early by NGO {ngo_id}.")
+    print(f"Opportunity {opportunity_id} has been ended early by NGO {ngo_id}.")
