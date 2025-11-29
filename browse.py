@@ -12,7 +12,7 @@ def search_opportunities(keyword="", location="", category=""):
     results = cursor.fetchall()
     conn.close()
 
-    print("\n🔎 Search Results:")
+    print("\n Search Results:")
     if not results:
         print("No opportunities found matching your search.")
     for row in results:
@@ -28,8 +28,8 @@ def express_interest(student_id, opportunity_id):
                    VALUES (%s, %s, %s)"""
         cursor.execute(query, (student_id, opportunity_id, datetime.datetime.now()))
         conn.commit()
-        print(f"✅ Student {student_id} expressed interest in opportunity {opportunity_id}")
+        print(f"Student {student_id} expressed interest in opportunity {opportunity_id}")
     except Exception as e:
-        print("⚠️ Already applied or error:", e)
+        print(" Already applied or error:", e)
     finally:
         conn.close()
