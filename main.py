@@ -25,23 +25,9 @@ def main():
             t=input("Type (student/ngo): ")
             if len(p)<8: print("❌ Password too short."); continue
             try:
-<<<<<<< HEAD
                 uid=register_user(u,p,t)
                 print("✅ Registered with ID",uid)
             except Exception as e: print("Error:",e)
-
-        elif choice=="2":
-            u=input("Username: ")
-            p=input("Password: ")
-            res=login_user(u,p)
-            if not res: print("❌ Invalid."); continue
-            uid,ut=res
-            print("Logged in as",ut)
-=======
-                user_id = register_user(username, password, user_type)
-                print("Registered successfully with user_id:", user_id)
-            except Exception as e:
-                print("Error:", e)
 
         elif choice == "2":
             username = input("Username: ")
@@ -52,7 +38,6 @@ def main():
                 continue
             user_id, user_type = user
             print(f"Logged in as {user_type}")
->>>>>>> 28127744d2e2b1d3794e56a502ab9ad71e12100c
 
             if ut=="ngo":
                 conn=get_connection()
@@ -81,28 +66,6 @@ def main():
                     elif c=="8": oid=int(input("Opp ID: ")); end_opportunity(ngo_id,oid)
                     elif c=="9": break
 
-<<<<<<< HEAD
-            elif ut=="student":
-                conn=get_connection()
-                cur=conn.cursor()
-                cur.execute("SELECT student_id FROM students WHERE user_id=%s",(uid,))
-                row=cur.fetchone(); conn.close()
-                if not row: print("No student profile."); continue
-                sid=row[0]
-                while True:
-                    print("\nStudent Menu")
-                    print("1.View opps\n2.Apply\n3.My apps\n4.Certificates\n5.Logout")
-                    c=input("Choose: ")
-                    if c=="1": view_opportunities()
-                    elif c=="2": oid=int(input("Opp ID: ")); apply_for_opportunity(sid,oid)
-                    elif c=="3": view_my_applications(sid)
-                    elif c=="4": oid=int(input("Opp ID: ")); generate_certificate(sid,oid)
-                    elif c=="5": break
-
-        elif choice=="3": break
-
-if __name__=="__main__":
-=======
                     conn = get_connection()
                     cursor = conn.cursor()
                     cursor.execute("SELECT ngo_id FROM ngos WHERE user_id=%s", (user_id,))
@@ -203,5 +166,4 @@ if __name__=="__main__":
             break
 
 if __name__ == "__main__":
->>>>>>> 28127744d2e2b1d3794e56a502ab9ad71e12100c
     main()
