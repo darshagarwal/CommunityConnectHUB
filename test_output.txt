@@ -1,0 +1,130 @@
+🌍 Welcome to Community Connect Hub 🌍
+
+Main Menu:
+1. Register
+2. Login
+3. Exit
+👉 User selects: 2 (Login)
+Username: ngo_demo
+Password: password123
+✅ Logged in as NGO
+
+👤 NGO Menu
+1. Post a new opportunity
+2. View my posted opportunities
+3. Edit an opportunity
+4. View applicants
+5. Add finance
+6. View impact
+7. Assign hours
+8. End opportunity
+9. Logout
+👉 User selects: 1 (Post new opportunity)
+✅ Opportunity posted successfully!
+
+👉 User selects: 2 (View my posted opportunities)
+
+📌 Opportunities by NGO 1
+[1] Tree Plantation | active | 2025-09-09 → 2025-09-16
+
+👉 User selects: 9 (Logout)
+
+🌍 Welcome to Community Connect Hub 🌍
+
+Main Menu:
+1. Register
+2. Login
+3. Exit
+👉 User selects: 2 (Login)
+Username: stu_demo
+Password: password123
+✅ Logged in as Student
+
+👤 Student Menu
+1. View available opportunities
+2. Apply
+3. My apps
+4. Certificates
+5. Logout
+👉 User selects: 1 (View opportunities)
+
+📌 Available Opportunities:
+[1] Tree Plantation | Plant trees in park | Delhi | 2025-09-09 → 2025-09-16 | active
+
+👉 User selects: 2 (Apply for opportunity 1)
+✅ Student 1 applied for opportunity 1
+
+👉 User selects: 3 (My Applications)
+
+📌 Applications of Student 1:
+[1] Tree Plantation | Delhi | 2025-09-09 → 2025-09-16 | active
+
+👉 User selects: 5 (Logout)
+
+🌍 Welcome to Community Connect Hub 🌍
+
+Main Menu:
+1. Register
+2. Login
+3. Exit
+👉 User selects: 2 (Login)
+Username: ngo_demo
+Password: password123
+✅ Logged in as NGO
+
+👉 User selects: 4 (View applicants for opp 1)
+
+📌 Applicants for Opportunity 1:
+Student 1: Riya | riya@example.com | Interests: Environment, Teaching
+
+👉 User selects: 5 (Add finance entries)
+✅ Finance entry added for opportunity 1.
+✅ Finance entry added for opportunity 1.
+
+👉 User selects: 6 (View impact report)
+
+📊 Impact Report for NGO 1
+
+🚩 Opportunity: Tree Plantation (ID: 1)
+
+💰 Finance Records:
+   collection | ₹5000.00 | CSR donation | 2025-09-09
+   spending | ₹2000.00 | Saplings purchase | 2025-09-09
+
+⏱ Volunteer Hours:
+   No volunteer hours assigned yet.
+
+👉 User selects: 7 (Assign volunteer hours)
+✅ Assigned 10 hours to student 1 for opportunity 1
+
+👉 User selects: 8 (End opportunity)
+✅ Opportunity 1 has been ended early by NGO 1.
+
+👉 User selects: 9 (Logout)
+
+🌍 Welcome to Community Connect Hub 🌍
+
+Main Menu:
+1. Register
+2. Login
+3. Exit
+👉 User selects: 2 (Login)
+Username: stu_demo
+Password: password123
+✅ Logged in as Student
+
+👉 User selects: 4 (Certificates)
+
+================ VOLUNTEER CERTIFICATE ================
+🏆 This is to certify that Riya
+contributed 10 volunteer hours in the opportunity:
+"Tree Plantation"
+Successfully completed on 2025-09-16
+=======================================================
+
+
+👉 User selects: 5 (Logout)
+
+👋 Session ended
+
+✅ Test session completed. Open test_output.txt for the simulated terminal log.
