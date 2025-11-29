@@ -80,16 +80,6 @@ def generate_certificate(student_id, opportunity_id):
         return
 
     student_name = student[0]
-
-    '''print("\n================ VOLUNTEER CERTIFICATE ================")
-    print(f"🏆 This is to certify that {student_name}")
-    print(f"contributed {hours} volunteer hours in the opportunity:")
-    print(f"\"{title}\"")
-    print(f"Successfully completed on {end_date}")
-    print("=======================================================\n")
-    print("\n" + "="*70)
-    print("|" + "🎖️  VOLUNTEER CERTIFICATE  🎖️".center(68) + "|")
-    print("="*70)'''
     
     print("|" + " ".center(68) + "|")
     print("|" + "This is to proudly certify that".center(68) + "|")
