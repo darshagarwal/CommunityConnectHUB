@@ -15,15 +15,15 @@ def run_all_tests():
     print("\n================= AUTH TESTS =================")
     try:
         student_uid = register_user("teststudent", "password123", "student")
-        print("✅ Registered new student, user_id:", student_uid)
+        print("Registered new student, user_id:", student_uid)
     except Exception as e:
-        print("⚠️ Student already exists:", e)
+        print("Student already exists:", e)
 
     try:
         ngo_uid = register_user("testngo", "password123", "ngo")
-        print("✅ Registered new NGO, user_id:", ngo_uid)
+        print("Registered new NGO, user_id:", ngo_uid)
     except Exception as e:
-        print("⚠️ NGO already exists:", e)
+        print("NGO already exists:", e)
 
     print("Login student1:", login_user("student1", "password123"))
     print("Login ngo1:", login_user("ngo1", "password123"))
