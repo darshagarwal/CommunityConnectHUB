@@ -1,5 +1,5 @@
 from auth import register_user, login_user
-from db import get_connection, create_tables
+from db import get_connection
 from ngo import (
     post_opportunity, view_my_opportunities, edit_opportunity,
     view_applicants, add_finance_entry, view_impact_report,
@@ -12,22 +12,20 @@ from student import (
 import datetime
 
 def main():
-    create_tables()
     print("🌍 Welcome to Community Connect Hub 🌍")
-
     while True:
         print("\n1. Register\n2. Login\n3. Exit")
-        choice=input("Choose: ")
+        choice = input("Select option: ")
 
-        if choice=="1":
-            u=input("Username: ")
-            p=input("Password (min 8 chars): ")
-            t=input("Type (student/ngo): ")
-            if len(p)<8: print("❌ Password too short."); continue
+        if choice == "1":
+            username = input("Username: ")
+            password = input("Password (min 8 chars): ")
+            user_type = input("Type (student/ngo): ")
             try:
-                uid=register_user(u,p,t)
-                print("✅ Registered with ID",uid)
-            except Exception as e: print("Error:",e)
+                user_id = register_user(username, password, user_type)
+                print("Registered successfully with user_id:", user_id)
+            except Exception as e:
+                print("Error:", e)
 
         elif choice == "2":
             username = input("Username: ")
@@ -39,32 +37,19 @@ def main():
             user_id, user_type = user
             print(f"Logged in as {user_type}")
 
-            if u=="ngo":
-                conn=get_connection()
-                cur=conn.cursor()
-                cur.execute("SELECT ngo_id FROM ngos WHERE user_id=%s",(uid,))
-                row=cur.fetchone()
-                conn.close()
-                if not row: print("No NGO profile."); continue
-                ngo_id=row[0]
+            if user_type == "ngo":
                 while True:
-                    print("\nNGO Menu")
-                    print("1.Post opp\n2.View opps\n3.Edit opp\n4.View applicants")
-                    print("5.Add finance\n6.View impact\n7.Assign hours\n8.End opp\n9.Logout")
-                    c=input("Choose: ")
-                    if c=="1":
-                        t=input("Title: "); d=input("Desc: "); s=input("Skills: ")
-                        comm=input("Commitment: "); loc=input("Location: ")
-                        end=input("End date YYYY-MM-DD: "); cat=input("Category: ")
-                        post_opportunity(ngo_id,t,d,s,comm,loc,datetime.date.today(),end,cat)
-                    elif c=="2": view_my_opportunities(ngo_id)
-                    elif c=="3": oid=int(input("Opp ID: ")); new=input("New title: "); edit_opportunity(ngo_id,oid,title=new)
-                    elif c=="4": oid=int(input("Opp ID: ")); view_applicants(oid)
-                    elif c=="5": oid=int(input("Opp ID: ")); typ=input("collection/spending: "); amt=float(input("Amt: ")); desc=input("Desc: "); add_finance_entry(ngo_id,oid,typ,amt,desc)
-                    elif c=="6": view_impact_report(ngo_id)
-                    elif c=="7": sid=int(input("Student ID: ")); oid=int(input("Opp ID: ")); h=int(input("Hours: ")); assign_volunteer_hours(sid,oid,h)
-                    elif c=="8": oid=int(input("Opp ID: ")); end_opportunity(ngo_id,oid)
-                    elif c=="9": break
+                    print("\n👤 NGO Dashboard")
+                    print("1. Post opportunity")
+                    print("2. View my opportunities")
+                    print("3. Edit opportunity")
+                    print("4. View applicants")
+                    print("5. Add finance entry (per drive)")
+                    print("6. View impact report (finance + hours grouped by drives)")
+                    print("7. Assign volunteer hours")
+                    print("8. End opportunity early")
+                    print("9. Logout")
+                    ngo_choice = input("Choose: ")
 
                     conn = get_connection()
                     cursor = conn.cursor()
@@ -76,7 +61,7 @@ def main():
                         break
                     ngo_id = ngo[0]
 
-                    if c == "1":
+                    if ngo_choice == "1":
                         title = input("Title: ")
                         desc = input("Description: ")
                         skills = input("Required skills: ")
@@ -87,39 +72,39 @@ def main():
                         category = input("Category: ")
                         post_opportunity(ngo_id, title, desc, skills, commitment, location, start, end, category)
 
-                    elif c == "2":
+                    elif ngo_choice == "2":
                         view_my_opportunities(ngo_id)
 
-                    elif c == "3":
+                    elif ngo_choice == "3":
                         oid = int(input("Opportunity ID: "))
                         new_title = input("New title: ")
                         edit_opportunity(ngo_id, oid, title=new_title)
 
-                    elif c== "4":
+                    elif ngo_choice == "4":
                         oid = int(input("Opportunity ID: "))
                         view_applicants(oid)
 
-                    elif c == "5":
+                    elif ngo_choice == "5":
                         oid = int(input("Opportunity ID: "))
                         t = input("Type (collection/spending): ")
                         amt = float(input("Amount: "))
                         desc = input("Description: ")
                         add_finance_entry(ngo_id, oid, t, amt, desc)
 
-                    elif c == "6":
+                    elif ngo_choice == "6":
                         view_impact_report(ngo_id)
 
-                    elif c == "7":
+                    elif ngo_choice == "7":
                         sid = int(input("Student ID: "))
                         oid = int(input("Opportunity ID: "))
                         hrs = int(input("Hours: "))
                         assign_volunteer_hours(sid, oid, hrs)
 
-                    elif c == "8":
+                    elif ngo_choice == "8":
                         oid = int(input("Opportunity ID: "))
                         end_opportunity(ngo_id, oid)
 
-                    elif c == "9":
+                    elif ngo_choice == "9":
                         print("Logged out.")
                         break
 
